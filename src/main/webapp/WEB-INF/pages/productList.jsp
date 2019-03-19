@@ -8,12 +8,17 @@
   <p>
     Welcome to Expert-Soft training!
   </p>
+  <form>
+    <input name="query" value="${param.query}">
+    <button>Search</button>
+  </form>
   <table>
     <thead>
       <tr>
         <td>Image</td>
         <td>Description</td>
         <td class="price">Price</td>
+
       </tr>
     </thead>
     <c:forEach var="product" items="${products}">
