@@ -24,12 +24,12 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public synchronized List<Product> findProducts(String query) {
+    public synchronized List<Product> findProducts(String query, String order, String sort) {
         List<Product> foundProducts = getActualProducts().collect(Collectors.toList());
         if (query != null) {
-            String[] queries = query.split("\\s");
+            String[] queries = query.toUpperCase().split("\\s");
 
-            return foundProducts.stream()
+            foundProducts = foundProducts.stream()
                     .collect(Collectors.toMap(Function.identity(), product -> Arrays.stream(queries)
                             .filter(word -> product.getDescription().toUpperCase().contains(word)).count()))
                     .entrySet().stream()
@@ -38,7 +38,9 @@ public class ArrayListProductDao implements ProductDao {
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toList());
         }
-        return foundProducts;
+        if (order == null || sort == null)
+            return foundProducts;
+        return sortProducts(foundProducts, order, sort);
     }
 
     @Override
@@ -56,6 +58,23 @@ public class ArrayListProductDao implements ProductDao {
         if (!products.removeIf(p -> p.getId().equals(id))) {
             throw new IllegalArgumentException("Product with that id not exists");
         }
+    }
+
+    private List<Product> sortProducts(List<Product> productList, String order, String sort) {
+        Comparator<Product> comparator = (o1, o2) -> 0;
+        if (sort.equals("description")) {
+            comparator = Comparator.comparing(Product::getDescription);
+        }
+
+        if (sort.equals("price")) {
+            comparator = Comparator.comparing(Product::getPrice);
+        }
+
+        if (order.equals("desc")) {
+            comparator = comparator.reversed();
+        }
+
+        return productList.stream().sorted(comparator).collect(Collectors.toList());
     }
 
 }
