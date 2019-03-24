@@ -7,14 +7,24 @@ import java.util.stream.Stream;
 
 public class ArrayListProductDao implements ProductDao {
 
-    private List<Product> products = new ArrayList<>();
+    private static ArrayListProductDao instanse;
 
+    private ArrayListProductDao() {
+    }
+
+    synchronized public static ArrayListProductDao getInstance() {
+        if (instanse == null) {
+            instanse = new ArrayListProductDao();
+        }
+        return instanse;
+    }
+
+    private List<Product> products = new ArrayList<>();
 
     private Stream<Product> getActualProducts() {
         return products.stream().filter(p -> p.getPrice() != null &&
                 p.getStock() > 0);
     }
-
 
     @Override
     public synchronized Product getProduct(Long id) {
