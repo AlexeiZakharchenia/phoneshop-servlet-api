@@ -25,4 +25,15 @@
     </servlet-mapping>
 
 
+    <servlet>
+        <servlet-name>productDetails</servlet-name>
+        <servlet-class>com.es.phoneshop.web.ProductDetailsPageServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>productDetails</servlet-name>
+        <url-pattern>/product/*</url-pattern>
+    </servlet-mapping>
+
+
 </web-app>

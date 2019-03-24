@@ -30,7 +30,7 @@ public class ArrayListProductDao implements ProductDao {
     public synchronized Product getProduct(Long id) {
         return getActualProducts().filter(p -> p.getId().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Product with that id not exists"));
+                .orElseThrow(() -> new ProductNotFoundException("Product with  id: " + id.toString() + " not exists"));
     }
 
     @Override
@@ -48,16 +48,17 @@ public class ArrayListProductDao implements ProductDao {
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toList());
         }
-        if (order == null || sort == null)
-            return foundProducts;
-        return sortProducts(foundProducts, order, sort);
+        if (order != null && sort != null)
+            return sortProducts(foundProducts, order, sort);
+        ;
+        return foundProducts;
     }
 
     @Override
     public synchronized void save(Product product) {
         if (products.stream()
                 .anyMatch(p -> p.getId().equals(product.getId()))) {
-            throw new IllegalArgumentException("Product with that id already exists");
+            throw new ProductNotFoundException("Product with id: " + product.getId().toString() + " already exists");
         } else {
             products.add(product);
         }
@@ -66,10 +67,9 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public synchronized void delete(Long id) {
         if (!products.removeIf(p -> p.getId().equals(id))) {
-            throw new IllegalArgumentException("Product with that id not exists");
+            throw new ProductNotFoundException("Product with  id: " + id.toString() + " not exists");
         }
     }
-
     private List<Product> sortProducts(List<Product> productList, String order, String sort) {
         Comparator<Product> comparator = (o1, o2) -> 0;
         if (sort.equals("description")) {
@@ -85,6 +85,11 @@ public class ArrayListProductDao implements ProductDao {
         }
 
         return productList.stream().sorted(comparator).collect(Collectors.toList());
+    }
+
+
+    public void clearAll() {
+        products.clear();
     }
 
 }
