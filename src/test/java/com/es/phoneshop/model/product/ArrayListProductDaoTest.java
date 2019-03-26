@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ArrayListProductDaoTest
 {
-    private ProductDao productDao;
+    private ArrayListProductDao productDao;
 
 
     @Mock
@@ -23,7 +23,7 @@ public class ArrayListProductDaoTest
     @Before
     public void setup() {
         productDao = ArrayListProductDao.getInstance();
-        ((ArrayListProductDao) productDao).clearAll();
+        productDao.clearAll();
         productDao.save(new Product(1L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
         productDao.save(new Product(2L, "sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
         productDao.save(new Product(3L, "sgs3", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg"));

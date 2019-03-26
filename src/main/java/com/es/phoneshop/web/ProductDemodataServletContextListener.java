@@ -32,8 +32,6 @@ public class ProductDemodataServletContextListener implements ServletContextList
             arrayListProductDao.save(new Product(11L, "simc56", "Siemens C56", new BigDecimal(70), usd, 20, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C56.jpg"));
             arrayListProductDao.save(new Product(12L, "simc61", "Siemens C61", new BigDecimal(80), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C61.jpg"));
             arrayListProductDao.save(new Product(13L, "simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
-
-
         }
 
     }
@@ -41,6 +39,5 @@ public class ProductDemodataServletContextListener implements ServletContextList
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
     }
-
 
 }

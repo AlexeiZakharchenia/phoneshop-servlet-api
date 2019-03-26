@@ -7,16 +7,29 @@ import java.util.stream.Stream;
 
 public class ArrayListProductDao implements ProductDao {
 
-    private static ArrayListProductDao instanse;
+    private static volatile ArrayListProductDao instance = null;
+
+
 
     private ArrayListProductDao() {
     }
 
-    synchronized public static ArrayListProductDao getInstance() {
-        if (instanse == null) {
-            instanse = new ArrayListProductDao();
+    public static ArrayListProductDao getInstance() {
+
+        ArrayListProductDao localInstance = instance;
+
+        if (instance == null) {
+            synchronized (ArrayListProductDao.class) {
+                localInstance = instance;
+                if (localInstance == null) {
+                    instance = localInstance = new ArrayListProductDao();
+                }
+
+            }
+
         }
-        return instanse;
+        return instance;
+
     }
 
     private List<Product> products = new ArrayList<>();
@@ -48,9 +61,8 @@ public class ArrayListProductDao implements ProductDao {
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toList());
         }
-        if (order != null && sort != null)
+        if (sort != null)
             return sortProducts(foundProducts, order, sort);
-        ;
         return foundProducts;
     }
 
@@ -70,6 +82,8 @@ public class ArrayListProductDao implements ProductDao {
             throw new ProductNotFoundException("Product with  id: " + id.toString() + " not exists");
         }
     }
+
+
     private List<Product> sortProducts(List<Product> productList, String order, String sort) {
         Comparator<Product> comparator = (o1, o2) -> 0;
         if (sort.equals("description")) {

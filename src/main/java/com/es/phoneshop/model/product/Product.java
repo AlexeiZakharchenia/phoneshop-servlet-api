@@ -33,18 +33,12 @@ public class Product {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return stock == product.stock &&
-                id.equals(product.id) &&
-                code.equals(product.code) &&
-                description.equals(product.description) &&
-                price.equals(product.price) &&
-                currency.equals(product.currency) &&
-                imageUrl.equals(product.imageUrl);
+        return id.equals(product.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, code, description, price, currency, stock, imageUrl);
+        return Objects.hash(id);
     }
 
     public Long getId() {

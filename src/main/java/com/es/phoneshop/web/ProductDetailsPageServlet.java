@@ -15,7 +15,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         productDao = ArrayListProductDao.getInstance();
     }
 
@@ -28,14 +28,11 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
             String productId = uri.substring(index + request.getServletPath().length() + 1);
 
-
-            request.setAttribute("product", productDao.getProduct(Long.valueOf(productId)));
+            request.setAttribute("products", productDao.getProduct(Long.valueOf(productId)));
 
             request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
-        } catch (ProductNotFoundException exception) {
+        } catch (ProductNotFoundException | NumberFormatException exception) {
             response.sendError(404, exception.getMessage());
-        } catch (NumberFormatException exception) {
-            response.sendError(500, exception.getMessage());
         }
     }
 }
