@@ -8,6 +8,9 @@
     <p>
         Product Description.
     </p>
+    <c:if test="${not empty param.message}">
+        <br><span style="color: green">${param.message}</span>
+    </c:if>
     <table>
         <thead>
         <tr>
@@ -32,4 +35,13 @@
             </td>
         </tr>
     </table>
+    <form method="post" action="${pageContext.servletContext.contextPath}/products/${products.id}">
+        <p>
+            <input name="quantity" value="${not empty param.quantity? param.quantity : 1 }" style="text-align: right">
+            <button>Add to cart</button>
+            <c:if test="${not empty error}">
+                <br><span style="color: red">${error}</span>
+            </c:if>
+        </p>
+    </form>
 </tags:master>
