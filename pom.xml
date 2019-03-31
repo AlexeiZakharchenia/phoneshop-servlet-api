@@ -8,6 +8,8 @@
   <name>phoneshop-servlet-api Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <dependencies>
+
+
       <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -37,6 +39,18 @@
       <version>2.23.0</version>
       <scope>test</scope>
     </dependency>
+      <dependency>
+          <groupId>org.powermock</groupId>
+          <artifactId>powermock-module-junit4</artifactId>
+          <version>1.7.3</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.powermock</groupId>
+          <artifactId>powermock-api-mockito2</artifactId>
+          <version>1.7.3</version>
+          <scope>test</scope>
+      </dependency>
   </dependencies>
   <build>
     <finalName>phoneshop-servlet-api</finalName>
