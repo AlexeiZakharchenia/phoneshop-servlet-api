@@ -3,6 +3,8 @@ package com.es.phoneshop.web;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.ProductNotFoundException;
+import com.es.phoneshop.recently_viewed.RecentlyViewedList;
+import com.es.phoneshop.recently_viewed.RecentlyViewedService;
 import com.es.phoneshop.сart.Cart;
 import com.es.phoneshop.сart.CartService;
 import com.es.phoneshop.сart.HttpSessionCartService;
@@ -16,13 +18,15 @@ import java.io.IOException;
 
 public class ProductDetailsPageServlet extends HttpServlet {
 
+    private RecentlyViewedService recentlyViewedService;
     private ProductDao productDao;
     private CartService cartService;
 
     @Override
     public void init() {
+        recentlyViewedService = RecentlyViewedService.getInstance();
         productDao = ArrayListProductDao.getInstance();
-        cartService = HttpSessionCartService.getIntstanse();
+        cartService = HttpSessionCartService.getIntstance();
     }
 
     @Override
@@ -32,10 +36,14 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
             long productId = getProductId(request);
 
+            RecentlyViewedList recentlyViewedList = recentlyViewedService.getRecentlyViewedProductList(request);
+
+
+            request.setAttribute("recentlyViewed", recentlyViewedList.getRecentlyViewedProducts());
             request.setAttribute("products", productDao.getProduct(productId));
             request.setAttribute("cart", cartService.getCart(request));
-
             request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
+            recentlyViewedService.addToRecentlyViewedProductList(recentlyViewedList, productId);
         } catch (ProductNotFoundException | NumberFormatException exception) {
             response.sendError(404, exception.getMessage());
         }

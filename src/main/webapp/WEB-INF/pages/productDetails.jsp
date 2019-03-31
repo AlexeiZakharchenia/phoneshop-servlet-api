@@ -44,4 +44,23 @@
             </c:if>
         </p>
     </form>
+    <h4>Recently Viewed:</h4>
+    <table>
+        <thead>
+        <c:forEach var="product" items="${recentlyViewed}">
+            <th>
+            <td align="center">
+                <img class="product-tile"
+                     src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
+                <br>
+                <a href="${pageContext.servletContext.contextPath}/products/${product.id}"> ${product.description} </a>
+                <br>
+                <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+                <br>
+            </td>
+            </th>
+        </c:forEach>
+
+        </thead>
+    </table>
 </tags:master>

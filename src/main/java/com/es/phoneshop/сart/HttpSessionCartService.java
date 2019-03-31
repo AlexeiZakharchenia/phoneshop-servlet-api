@@ -9,10 +9,25 @@ import java.util.Optional;
 
 public class HttpSessionCartService implements CartService {
     private static final String SESSION_CART_KEY = "sessionCart";
-    private static final CartService intstanse = new HttpSessionCartService();
+    private static volatile HttpSessionCartService instance = null;
 
-    public static CartService getIntstanse() {
-        return intstanse;
+    private HttpSessionCartService() {
+    }
+
+    public static CartService getIntstance() {
+        HttpSessionCartService localInstance = instance;
+
+        if (instance == null) {
+            synchronized (HttpSessionCartService.class) {
+                localInstance = instance;
+                if (localInstance == null) {
+                    instance = localInstance = new HttpSessionCartService();
+                }
+
+            }
+
+        }
+        return instance;
     }
 
     @Override
