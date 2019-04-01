@@ -1,10 +1,10 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.ProductNotFoundException;
-import com.es.phoneshop.recently_viewed.RecentlyViewedList;
-import com.es.phoneshop.recently_viewed.RecentlyViewedService;
+import com.es.phoneshop.recentlyViewed.RecentlyViewedService;
 import com.es.phoneshop.сart.Cart;
 import com.es.phoneshop.сart.CartService;
 import com.es.phoneshop.сart.HttpSessionCartService;
@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.LinkedList;
+
+
 
 public class ProductDetailsPageServlet extends HttpServlet {
 
@@ -36,10 +39,10 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
             long productId = getProductId(request);
 
-            RecentlyViewedList recentlyViewedList = recentlyViewedService.getRecentlyViewedProductList(request);
+            LinkedList<Product> recentlyViewedList = recentlyViewedService.getRecentlyViewedProductList(request);
 
 
-            request.setAttribute("recentlyViewed", recentlyViewedList.getRecentlyViewedProducts());
+            request.setAttribute("recentlyViewed", recentlyViewedList);
             request.setAttribute("products", productDao.getProduct(productId));
             request.setAttribute("cart", cartService.getCart(request));
             request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
@@ -52,14 +55,18 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long productId = getProductId(request);
-        Integer quantity;
+        int quantity;
         try {
             quantity = Integer.valueOf(request.getParameter("quantity"));
+            if (quantity < 0) throw new IllegalArgumentException();
         } catch (NumberFormatException exception) {
-            request.setAttribute("error", "not a number");
+            request.setAttribute("error", "Not a number");
             doGet(request, response);
             return;
-
+        } catch (IllegalArgumentException exception) {
+            request.setAttribute("error", "Invalid input");
+            doGet(request, response);
+            return;
         }
         Cart cart = cartService.getCart(request);
         try {
