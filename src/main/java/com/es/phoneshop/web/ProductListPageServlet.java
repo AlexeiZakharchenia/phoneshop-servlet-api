@@ -2,6 +2,8 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.recentlyViewed.RecentlyViewedService;
+import com.es.phoneshop.сart.HttpSessionCartService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -13,10 +15,13 @@ import java.io.IOException;
 public class ProductListPageServlet extends HttpServlet {
 
     private ProductDao productDao;
+    private RecentlyViewedService recentlyViewedService;
 
     @Override
     public void init(ServletConfig config) {
+
         productDao = ArrayListProductDao.getInstance();
+        recentlyViewedService = RecentlyViewedService.getInstance();
     }
 
     @Override
@@ -27,6 +32,8 @@ public class ProductListPageServlet extends HttpServlet {
         String sort = request.getParameter("sort");
         String order = request.getParameter("order");
         request.setAttribute("products", productDao.findProducts(query, order, sort));
+        request.setAttribute("cart", HttpSessionCartService.getIntstance().getCart(request));
+        request.setAttribute("recentlyViewed", recentlyViewedService.getRecentlyViewedProductList(request));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 
