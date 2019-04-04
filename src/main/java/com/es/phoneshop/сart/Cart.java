@@ -11,16 +11,18 @@ public class Cart {
 
     private Integer totalQuantity = 0;
 
+    Cart() {
+    }
 
-    public List<CartItem> getCartItems() {
+    List<CartItem> getCartItems() {
         return cartItems;
     }
 
-    public void setTotalPrice(BigDecimal totalPrice) {
+    void setTotalPrice(BigDecimal totalPrice) {
         this.totalPrice = totalPrice;
     }
 
-    public void setTotalQuantity(Integer totalQuantity) {
+    void setTotalQuantity(Integer totalQuantity) {
         this.totalQuantity = totalQuantity;
     }
 

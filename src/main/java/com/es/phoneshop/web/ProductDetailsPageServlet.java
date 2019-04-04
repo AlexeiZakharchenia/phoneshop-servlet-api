@@ -5,6 +5,7 @@ import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.ProductNotFoundException;
 import com.es.phoneshop.recentlyViewed.RecentlyViewedService;
+import com.es.phoneshop.util.IdGetter;
 import com.es.phoneshop.сart.Cart;
 import com.es.phoneshop.сart.CartService;
 import com.es.phoneshop.сart.HttpSessionCartService;
@@ -24,12 +25,14 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private RecentlyViewedService recentlyViewedService;
     private ProductDao productDao;
     private CartService cartService;
+    private IdGetter idGetter;
 
     @Override
     public void init() {
+        idGetter = IdGetter.getInstance();
         recentlyViewedService = RecentlyViewedService.getInstance();
         productDao = ArrayListProductDao.getInstance();
-        cartService = HttpSessionCartService.getIntstance();
+        cartService = HttpSessionCartService.getInstance();
     }
 
     @Override
@@ -37,7 +40,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         try {
 
 
-            long productId = getProductId(request);
+            long productId = idGetter.getProductId(request);
 
             LinkedList<Product> recentlyViewedList = recentlyViewedService.getRecentlyViewedProductList(request);
 
@@ -54,11 +57,10 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long productId = getProductId(request);
+        Long productId = idGetter.getProductId(request);
         int quantity;
         try {
             quantity = Integer.valueOf(request.getParameter("quantity"));
-            if (quantity < 0) throw new IllegalArgumentException();
         } catch (NumberFormatException exception) {
             request.setAttribute("error", "Not a number");
             doGet(request, response);
@@ -71,7 +73,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         Cart cart = cartService.getCart(request);
         try {
             cartService.add(cart, productId, quantity);
-        } catch (OutOfStockException ex) {
+        } catch (OutOfStockException | IllegalArgumentException ex) {
             request.setAttribute("error", ex.getMessage());
             doGet(request, response);
             return;
@@ -80,12 +82,5 @@ public class ProductDetailsPageServlet extends HttpServlet {
         response.sendRedirect(request.getRequestURI() + "?message=Added successfully&quantity=" + quantity);
 
 
-    }
-
-    public Long getProductId(HttpServletRequest request) {
-        String uri = request.getRequestURI();
-
-        int index = uri.indexOf(request.getServletPath());
-        return Long.parseLong(uri.substring(index + request.getServletPath().length() + 1));
     }
 }

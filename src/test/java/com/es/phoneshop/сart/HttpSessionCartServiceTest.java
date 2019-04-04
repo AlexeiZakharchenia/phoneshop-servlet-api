@@ -27,7 +27,7 @@ public class HttpSessionCartServiceTest {
     @Mock
     private HttpSession session;
     @InjectMocks
-    private CartService httpSessionCartService = HttpSessionCartService.getIntstance();
+    private CartService httpSessionCartService = HttpSessionCartService.getInstance();
 
     private ArrayListProductDao productDao = ArrayListProductDao.getInstance();
 

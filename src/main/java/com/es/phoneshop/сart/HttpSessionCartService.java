@@ -17,7 +17,7 @@ public class HttpSessionCartService implements CartService {
     private HttpSessionCartService() {
     }
 
-    public static CartService getIntstance() {
+    public static CartService getInstance() {
         HttpSessionCartService localInstance = instance;
 
         if (instance == null) {
@@ -46,6 +46,7 @@ public class HttpSessionCartService implements CartService {
 
     @Override
     public void add(Cart cart, long productId, int quantity) throws OutOfStockException {
+        if (quantity < 0) throw new IllegalArgumentException("Invalid input");
         Product product = productDao.getProduct(productId);
         if (quantity > product.getStock()) {
             throw new OutOfStockException("Not enougth stock. Product stock is " + product.getStock());

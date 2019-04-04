@@ -32,7 +32,7 @@ public class ProductListPageServlet extends HttpServlet {
         String sort = request.getParameter("sort");
         String order = request.getParameter("order");
         request.setAttribute("products", productDao.findProducts(query, order, sort));
-        request.setAttribute("cart", HttpSessionCartService.getIntstance().getCart(request));
+        request.setAttribute("cart", HttpSessionCartService.getInstance().getCart(request));
         request.setAttribute("recentlyViewed", recentlyViewedService.getRecentlyViewedProductList(request));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
