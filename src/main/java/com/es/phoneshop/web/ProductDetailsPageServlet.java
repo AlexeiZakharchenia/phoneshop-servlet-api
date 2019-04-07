@@ -1,15 +1,15 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.cart.Cart;
+import com.es.phoneshop.cart.CartService;
+import com.es.phoneshop.cart.HttpSessionCartService;
+import com.es.phoneshop.cart.OutOfStockException;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.ProductNotFoundException;
 import com.es.phoneshop.recentlyViewed.RecentlyViewedService;
 import com.es.phoneshop.util.IdGetter;
-import com.es.phoneshop.сart.Cart;
-import com.es.phoneshop.сart.CartService;
-import com.es.phoneshop.сart.HttpSessionCartService;
-import com.es.phoneshop.сart.OutOfStockException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

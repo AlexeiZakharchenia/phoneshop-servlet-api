@@ -1,10 +1,12 @@
-package com.es.phoneshop.сart;
+package com.es.phoneshop.cart;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cart {
+
+public class Cart implements Serializable {
     private List<CartItem> cartItems = new ArrayList<>();
 
     private BigDecimal totalPrice = new BigDecimal(0);
@@ -14,8 +16,20 @@ public class Cart {
     Cart() {
     }
 
-    List<CartItem> getCartItems() {
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+
+    public Integer getTotalQuantity() {
+        return totalQuantity;
+    }
+
+    public List<CartItem> getCartItems() {
         return cartItems;
+    }
+
+    public void setCartItems(List<CartItem> cartItems) {
+        this.cartItems = cartItems;
     }
 
     void setTotalPrice(BigDecimal totalPrice) {

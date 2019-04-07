@@ -1,4 +1,4 @@
-package com.es.phoneshop.сart;
+package com.es.phoneshop.cart;
 
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;

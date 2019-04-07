@@ -1,4 +1,4 @@
-package com.es.phoneshop.сart;
+package com.es.phoneshop.cart;
 
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
@@ -64,6 +64,36 @@ public class HttpSessionCartService implements CartService {
             CartItem cartItem = new CartItem(product, quantity);
             cart.getCartItems().add(cartItem);
         }
+        recalculateTotals(cart);
+    }
+
+    @Override
+    public void update(Cart cart, long productId, int quantity) throws OutOfStockException {
+        if (quantity < 0) throw new IllegalArgumentException("Invalid input");
+        Product product = productDao.getProduct(productId);
+        if (quantity > product.getStock()) {
+            throw new OutOfStockException("Not enougth stock. Product stock is " + product.getStock());
+        }
+        Optional<CartItem> cartItemOptional = cart.getCartItems().stream()
+                .filter(cartItem -> Long.valueOf(productId).equals(cartItem.getProduct().getId()))
+                .findAny();
+        if (cartItemOptional.isPresent()) {
+            CartItem cartItem = cartItemOptional.get();
+            cartItem.setQuantity(quantity);
+        } else {
+            CartItem cartItem = new CartItem(product, quantity);
+            cart.getCartItems().add(cartItem);
+        }
+        recalculateTotals(cart);
+    }
+
+    @Override
+    public void delete(Cart cart, long productId) {
+        Long productIdLong = productId;
+        cart.getCartItems().removeIf(cartItem -> productIdLong.equals(cartItem.getProduct().getId()));
+    }
+
+    private void recalculateTotals(Cart cart) {
         BigDecimal totalPrice = cart.getCartItems().stream()
                 .map(cartItem -> cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())))
                 .reduce(BigDecimal::add).get();
@@ -72,6 +102,5 @@ public class HttpSessionCartService implements CartService {
                 .mapToInt(Integer::intValue).sum();
         cart.setTotalPrice(totalPrice);
         cart.setTotalQuantity(totalQuantity);
-
     }
 }

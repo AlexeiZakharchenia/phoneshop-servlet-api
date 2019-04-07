@@ -1,21 +1,31 @@
-package com.es.phoneshop.сart;
+package com.es.phoneshop.cart;
 
 import com.es.phoneshop.model.product.Product;
 
-public class CartItem {
-    private Product product;
-    private int quantity;
+import java.io.Serializable;
 
-    CartItem(Product product, int quantity) {
+public class CartItem implements Serializable {
+    private Product product;
+    private Integer quantity;
+
+
+    public CartItem() {
+    }
+
+    CartItem(Product product, Integer quantity) {
         this.product = product;
         this.quantity = quantity;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public Product getProduct() {
         return product;
     }
 
-    int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
