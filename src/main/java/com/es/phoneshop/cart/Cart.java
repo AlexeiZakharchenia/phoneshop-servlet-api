@@ -16,6 +16,7 @@ public class Cart implements Serializable {
     Cart() {
     }
 
+
     public BigDecimal getTotalPrice() {
         return totalPrice;
     }

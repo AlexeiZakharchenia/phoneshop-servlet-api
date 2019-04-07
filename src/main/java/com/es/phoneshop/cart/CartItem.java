@@ -17,6 +17,10 @@ public class CartItem implements Serializable {
         this.quantity = quantity;
     }
 
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
     public void setProduct(Product product) {
         this.product = product;
     }
