@@ -91,12 +91,18 @@ public class HttpSessionCartService implements CartService {
     public void delete(Cart cart, long productId) {
         Long productIdLong = productId;
         cart.getCartItems().removeIf(cartItem -> productIdLong.equals(cartItem.getProduct().getId()));
+        recalculateTotals(cart);
     }
 
     private void recalculateTotals(Cart cart) {
-        BigDecimal totalPrice = cart.getCartItems().stream()
+        BigDecimal totalPrice = new BigDecimal(0);
+        Optional<BigDecimal> actualPrice = cart.getCartItems().stream()
                 .map(cartItem -> cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())))
-                .reduce(BigDecimal::add).get();
+                .reduce(BigDecimal::add);
+        if (actualPrice.isPresent()) {
+            totalPrice = actualPrice.get();
+        }
+
         Integer totalQuantity = cart.getCartItems().stream()
                 .map(CartItem::getQuantity)
                 .mapToInt(Integer::intValue).sum();

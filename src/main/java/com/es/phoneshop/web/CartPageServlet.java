@@ -4,9 +4,7 @@ import com.es.phoneshop.cart.Cart;
 import com.es.phoneshop.cart.CartService;
 import com.es.phoneshop.cart.HttpSessionCartService;
 import com.es.phoneshop.cart.OutOfStockException;
-import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.recentlyViewed.RecentlyViewedService;
 
 import javax.servlet.ServletException;
@@ -21,13 +19,11 @@ import java.util.Objects;
 
 public class CartPageServlet extends HttpServlet {
 
-    private ProductDao productDao;
     private CartService cartService;
     private RecentlyViewedService recentlyViewedService;
 
     @Override
     public void init() {
-        productDao = ArrayListProductDao.getInstance();
         cartService = HttpSessionCartService.getInstance();
         recentlyViewedService = RecentlyViewedService.getInstance();
     }

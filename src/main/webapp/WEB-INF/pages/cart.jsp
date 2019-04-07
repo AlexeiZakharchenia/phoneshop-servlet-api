@@ -43,6 +43,7 @@
                     <td>
                         <input name="quantity"
                                value="${not empty paramValues.quantity[status.index]? paramValues.quantity[status.index]: cartItem.quantity}"
+                               style="text-align: right"
                                style="text-align: right"/>
                         <input type="hidden" name="productId" value="${product.id}"/>
                         <c:if test="${not empty errors[status.index]}">
@@ -52,6 +53,11 @@
                     <td class="price">
                         <fmt:formatNumber value="${product.price}" type="currency"
                                           currencySymbol="${product.currency.symbol}"/>
+                    </td>
+                    <td>
+                        <button formaction="${pageContext.servletContext.contextPath}/cart/deleteItem/${product.id}">
+                            Delete
+                        </button>
                     </td>
                 </tr>
 
