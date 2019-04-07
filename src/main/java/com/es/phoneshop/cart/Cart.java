@@ -13,7 +13,7 @@ public class Cart implements Serializable {
 
     private Integer totalQuantity = 0;
 
-    Cart() {
+    public Cart() {
     }
 
 
