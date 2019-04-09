@@ -3,7 +3,7 @@ package com.es.phoneshop.web;
 import com.es.phoneshop.cart.Cart;
 import com.es.phoneshop.cart.CartService;
 import com.es.phoneshop.cart.HttpSessionCartService;
-import com.es.phoneshop.util.IdGetter;
+import com.es.phoneshop.util.RequestUtility;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,18 +14,18 @@ import java.io.IOException;
 public class CartItemDeleteServlet extends HttpServlet {
 
     private CartService cartService;
-    private IdGetter idGetter;
+    private RequestUtility requestUtility;
 
     @Override
     public void init() {
-        idGetter = IdGetter.getInstance();
+        requestUtility = RequestUtility.getInstance();
         cartService = HttpSessionCartService.getInstance();
     }
 
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        long productId = idGetter.getProductId(request);
+        long productId = requestUtility.getProductId(request);
         Cart cart = cartService.getCart(request);
         cartService.delete(cart, productId);
         response.sendRedirect(request.getContextPath() + "/cart?message=Cart item deleted successfully");

@@ -1,26 +1,24 @@
 package com.es.phoneshop.util;
 
 import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.ProductDao;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class IdGetter {
-    private static volatile IdGetter instance;
-    private ProductDao productDao = ArrayListProductDao.getInstance();
+public class RequestUtility {
+    private static volatile RequestUtility instance;
 
-    private IdGetter() {
+    private RequestUtility() {
     }
 
-    public static IdGetter getInstance() {
+    public static RequestUtility getInstance() {
 
-        IdGetter localInstance = instance;
+        RequestUtility localInstance = instance;
 
         if (instance == null) {
             synchronized (ArrayListProductDao.class) {
                 localInstance = instance;
                 if (localInstance == null) {
-                    instance = localInstance = new IdGetter();
+                    instance = localInstance = new RequestUtility();
                 }
 
             }

@@ -9,7 +9,7 @@ import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.ProductNotFoundException;
 import com.es.phoneshop.recentlyViewed.RecentlyViewedService;
-import com.es.phoneshop.util.IdGetter;
+import com.es.phoneshop.util.RequestUtility;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,11 +25,11 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private RecentlyViewedService recentlyViewedService;
     private ProductDao productDao;
     private CartService cartService;
-    private IdGetter idGetter;
+    private RequestUtility requestUtility;
 
     @Override
     public void init() {
-        idGetter = IdGetter.getInstance();
+        requestUtility = requestUtility.getInstance();
         recentlyViewedService = RecentlyViewedService.getInstance();
         productDao = ArrayListProductDao.getInstance();
         cartService = HttpSessionCartService.getInstance();
@@ -40,7 +40,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         try {
 
 
-            long productId = idGetter.getProductId(request);
+            long productId = requestUtility.getProductId(request);
 
             LinkedList<Product> recentlyViewedList = recentlyViewedService.getRecentlyViewedProductList(request);
 
@@ -57,7 +57,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long productId = idGetter.getProductId(request);
+        Long productId = requestUtility.getProductId(request);
         int quantity;
         try {
             quantity = Integer.valueOf(request.getParameter("quantity"));

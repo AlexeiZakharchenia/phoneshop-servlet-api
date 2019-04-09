@@ -46,7 +46,7 @@ public class HttpSessionCartService implements CartService {
 
     @Override
     public void add(Cart cart, long productId, int quantity) throws OutOfStockException {
-        if (quantity < 0) throw new IllegalArgumentException("Invalid input");
+        if (quantity <= 0) throw new IllegalArgumentException("Invalid input(quantity <= 0)");
         Product product = productDao.getProduct(productId);
         if (quantity > product.getStock()) {
             throw new OutOfStockException("Not enougth stock. Product stock is " + product.getStock());
@@ -69,7 +69,7 @@ public class HttpSessionCartService implements CartService {
 
     @Override
     public void update(Cart cart, long productId, int quantity) throws OutOfStockException {
-        if (quantity < 0) throw new IllegalArgumentException("Invalid input");
+        if (quantity <= 0) throw new IllegalArgumentException("Invalid input(quantity <= 0)");
         Product product = productDao.getProduct(productId);
         if (quantity > product.getStock()) {
             throw new OutOfStockException("Not enougth stock. Product stock is " + product.getStock());
