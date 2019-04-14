@@ -12,6 +12,14 @@ public class ArrayListOrderDao implements OrderDao {
     private List<Order> orders = new ArrayList<>();
     private AtomicLong orderId = new AtomicLong();
 
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public Long getOrderId() {
+        return orderId.get();
+    }
+
     private ArrayListOrderDao() {
     }
 

@@ -29,6 +29,7 @@ public class OrderOverviewPageServlet extends HttpServlet {
             order = orderDao.getBySecureId(extractId(request));
         } catch (OrderNotFoundException exception) {
             response.sendError(404, exception.getMessage());
+            return;
         }
         request.setAttribute("order", order);
         request.getRequestDispatcher("/WEB-INF/pages/orderOverview.jsp").forward(request, response);

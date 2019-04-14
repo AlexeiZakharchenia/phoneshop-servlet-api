@@ -19,9 +19,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HttpSessionCartServiceTest {
-
-    @Mock
-    Cart cart = new Cart();
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -54,7 +51,10 @@ public class HttpSessionCartServiceTest {
         assertEquals(1, cart.getCartItems().size());
         httpSessionCartService.update(cart, 1L, 2);
         assertEquals(Integer.valueOf(2), cart.getCartItems().get(0).getQuantity());
-        httpSessionCartService.delete(cart, 1L);
+        httpSessionCartService.deleteProduct(cart, 1L);
+        assertEquals(0, cart.getCartItems().size());
+        httpSessionCartService.add(cart, 1L, 1);
+        httpSessionCartService.clearCart(cart);
         assertEquals(0, cart.getCartItems().size());
     }
 

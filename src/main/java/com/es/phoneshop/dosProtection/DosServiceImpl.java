@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DosServiceImpl implements DosService {
 
     private static volatile DosServiceImpl instance = null;
-    private static int THRESHOLD = 10;
+    private static int THRESHOLD = 30;
     private volatile Date lastResetDate = new Date();
 
     private Map<String, AtomicInteger> ipCallCount = new ConcurrentHashMap<>();
