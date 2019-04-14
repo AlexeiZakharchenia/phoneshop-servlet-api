@@ -43,7 +43,6 @@
                     <td>
                         <input name="quantity"
                                value="${not empty paramValues.quantity[status.index]? paramValues.quantity[status.index]: cartItem.quantity}"
-                               style="text-align: right"
                                style="text-align: right"/>
                         <input type="hidden" name="productId" value="${product.id}"/>
                         <c:if test="${not empty errors[status.index]}">
@@ -70,6 +69,10 @@
         <br>
         <button>Update</button>
     </form>
+    <form method="get" action="${pageContext.servletContext.contextPath}/checkout">
+        <button>Checkout</button>
+    </form>
+
     <h4>Recently Viewed:</h4>
     <table>
         <thead>

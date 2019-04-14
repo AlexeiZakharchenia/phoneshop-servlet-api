@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class Cart implements Serializable {
@@ -15,6 +16,7 @@ public class Cart implements Serializable {
 
     public Cart() {
     }
+
 
 
     public BigDecimal getTotalPrice() {
@@ -33,16 +35,31 @@ public class Cart implements Serializable {
         this.cartItems = cartItems;
     }
 
-    void setTotalPrice(BigDecimal totalPrice) {
+    public void setTotalPrice(BigDecimal totalPrice) {
         this.totalPrice = totalPrice;
     }
 
-    void setTotalQuantity(Integer totalQuantity) {
+    public void setTotalQuantity(Integer totalQuantity) {
         this.totalQuantity = totalQuantity;
     }
 
     @Override
     public String toString() {
         return "{ Total quantity of products: " + totalQuantity + ". Total price of products: " + totalPrice + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cart cart = (Cart) o;
+        return Objects.equals(cartItems, cart.cartItems) &&
+                Objects.equals(totalPrice, cart.totalPrice) &&
+                Objects.equals(totalQuantity, cart.totalQuantity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cartItems, totalPrice, totalQuantity);
     }
 }

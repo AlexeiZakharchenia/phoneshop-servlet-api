@@ -29,7 +29,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     public void init() {
-        requestUtility = requestUtility.getInstance();
+        requestUtility = RequestUtility.getInstance();
         recentlyViewedService = RecentlyViewedService.getInstance();
         productDao = ArrayListProductDao.getInstance();
         cartService = HttpSessionCartService.getInstance();
@@ -47,7 +47,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
             request.setAttribute("recentlyViewed", recentlyViewedList);
             request.setAttribute("products", productDao.getProduct(productId));
-            request.setAttribute("cart", cartService.getCart(request));
             request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
             recentlyViewedService.addToRecentlyViewedProductList(recentlyViewedList, productId);
         } catch (ProductNotFoundException | NumberFormatException exception) {

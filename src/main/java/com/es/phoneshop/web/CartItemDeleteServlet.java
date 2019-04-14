@@ -27,7 +27,7 @@ public class CartItemDeleteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         long productId = requestUtility.getProductId(request);
         Cart cart = cartService.getCart(request);
-        cartService.delete(cart, productId);
+        cartService.deleteProduct(cart, productId);
         response.sendRedirect(request.getContextPath() + "/cart?message=Cart item deleted successfully");
     }
 }

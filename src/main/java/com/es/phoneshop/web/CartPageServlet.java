@@ -31,10 +31,9 @@ public class CartPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         LinkedList<Product> recentlyViewedList = recentlyViewedService.getRecentlyViewedProductList(request);
-        request.setAttribute("recentlyViewed", recentlyViewedList);
         request.setAttribute("cart", cartService.getCart(request));
+        request.setAttribute("recentlyViewed", recentlyViewedList);
         request.getRequestDispatcher("/WEB-INF/pages/cart.jsp").forward(request, response);
-
     }
 
     @Override

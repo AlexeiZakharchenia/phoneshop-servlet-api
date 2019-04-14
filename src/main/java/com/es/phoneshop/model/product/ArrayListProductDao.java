@@ -70,7 +70,7 @@ public class ArrayListProductDao implements ProductDao {
     public synchronized void save(Product product) {
         if (products.stream()
                 .anyMatch(p -> p.getId().equals(product.getId()))) {
-            throw new ProductNotFoundException("Product with id: " + product.getId().toString() + " already exists");
+            throw new IllegalArgumentException("Product with id: " + product.getId().toString() + " already exists");
         } else {
             products.add(product);
         }

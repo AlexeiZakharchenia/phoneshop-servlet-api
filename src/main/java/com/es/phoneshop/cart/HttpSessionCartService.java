@@ -7,6 +7,7 @@ import com.es.phoneshop.model.product.ProductDao;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class HttpSessionCartService implements CartService {
@@ -88,10 +89,20 @@ public class HttpSessionCartService implements CartService {
     }
 
     @Override
-    public void delete(Cart cart, long productId) {
+    public void deleteProduct(Cart cart, long productId) {
         Long productIdLong = productId;
         cart.getCartItems().removeIf(cartItem -> productIdLong.equals(cartItem.getProduct().getId()));
         recalculateTotals(cart);
+    }
+
+    @Override
+    public void clearCart(Cart cart) {
+        cart.getCartItems().forEach(cartItem ->
+                productDao.getProduct(cartItem.getProduct().getId())
+                        .setStock(cartItem.getProduct().getStock() - cartItem.getQuantity()));
+        cart.setTotalPrice(BigDecimal.ZERO);
+        cart.setTotalQuantity(0);
+        cart.setCartItems(new ArrayList<>());
     }
 
     private void recalculateTotals(Cart cart) {
