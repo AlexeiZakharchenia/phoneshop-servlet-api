@@ -57,7 +57,7 @@ public class ArrayListProductDaoTest
 
     @Test
     public void testClearAll() {
-        ((ArrayListProductDao) productDao).clearAll();
+        productDao.clearAll();
         assertEquals(0, productDao.findProducts(null, null, null).size());
     }
 }

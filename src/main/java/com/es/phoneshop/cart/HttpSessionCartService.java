@@ -1,4 +1,4 @@
-package com.es.phoneshop.сart;
+package com.es.phoneshop.cart;
 
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
@@ -17,7 +17,7 @@ public class HttpSessionCartService implements CartService {
     private HttpSessionCartService() {
     }
 
-    public static CartService getIntstance() {
+    public static CartService getInstance() {
         HttpSessionCartService localInstance = instance;
 
         if (instance == null) {
@@ -46,6 +46,7 @@ public class HttpSessionCartService implements CartService {
 
     @Override
     public void add(Cart cart, long productId, int quantity) throws OutOfStockException {
+        if (quantity <= 0) throw new IllegalArgumentException("Invalid input(quantity <= 0)");
         Product product = productDao.getProduct(productId);
         if (quantity > product.getStock()) {
             throw new OutOfStockException("Not enougth stock. Product stock is " + product.getStock());
@@ -63,14 +64,57 @@ public class HttpSessionCartService implements CartService {
             CartItem cartItem = new CartItem(product, quantity);
             cart.getCartItems().add(cartItem);
         }
-        BigDecimal totalPrice = cart.getCartItems().stream()
+        recalculateTotals(cart);
+    }
+
+    @Override
+    public void update(Cart cart, long productId, int quantity) throws OutOfStockException {
+        if (quantity <= 0) throw new IllegalArgumentException("Invalid input(quantity <= 0)");
+        Product product = productDao.getProduct(productId);
+        if (quantity > product.getStock()) {
+            throw new OutOfStockException("Not enougth stock. Product stock is " + product.getStock());
+        }
+        Optional<CartItem> cartItemOptional = cart.getCartItems().stream()
+                .filter(cartItem -> Long.valueOf(productId).equals(cartItem.getProduct().getId()))
+                .findAny();
+        if (cartItemOptional.isPresent()) {
+            CartItem cartItem = cartItemOptional.get();
+            cartItem.setQuantity(quantity);
+        } else {
+            CartItem cartItem = new CartItem(product, quantity);
+            cart.getCartItems().add(cartItem);
+        }
+        recalculateTotals(cart);
+    }
+
+    @Override
+    public void deleteProduct(Cart cart, long productId) {
+        Long productIdLong = productId;
+        cart.getCartItems().removeIf(cartItem -> productIdLong.equals(cartItem.getProduct().getId()));
+        recalculateTotals(cart);
+    }
+
+    @Override
+    public void clearCart(Cart cart, HttpServletRequest request) {
+        cart.getCartItems().forEach(cartItem ->
+                productDao.getProduct(cartItem.getProduct().getId())
+                        .setStock(cartItem.getProduct().getStock() - cartItem.getQuantity()));
+        request.getSession().setAttribute(SESSION_CART_KEY, new Cart());
+    }
+
+    private void recalculateTotals(Cart cart) {
+        BigDecimal totalPrice = new BigDecimal(0);
+        Optional<BigDecimal> actualPrice = cart.getCartItems().stream()
                 .map(cartItem -> cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())))
-                .reduce(BigDecimal::add).get();
+                .reduce(BigDecimal::add);
+        if (actualPrice.isPresent()) {
+            totalPrice = actualPrice.get();
+        }
+
         Integer totalQuantity = cart.getCartItems().stream()
                 .map(CartItem::getQuantity)
                 .mapToInt(Integer::intValue).sum();
         cart.setTotalPrice(totalPrice);
         cart.setTotalQuantity(totalQuantity);
-
     }
 }

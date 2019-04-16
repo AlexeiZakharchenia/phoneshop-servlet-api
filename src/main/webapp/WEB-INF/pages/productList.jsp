@@ -52,7 +52,8 @@
                 <img class="product-tile"
                      src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
                 <br>
-                <a href="${pageContext.servletContext.contextPath}/${product.id}"> ${product.description} </a> <br>
+                <a href="${pageContext.servletContext.contextPath}/products/${product.id}"> ${product.description} </a>
+                <br>
                 <fmt:formatNumber value="${product.price}" type="currency"
                                   currencySymbol="${product.currency.symbol}"/>
                 <br>

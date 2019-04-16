@@ -1,7 +1,7 @@
-package com.es.phoneshop.сart;
+package com.es.phoneshop.cart;
 
 public class OutOfStockException extends Exception {
-    public OutOfStockException(String message) {
+    OutOfStockException(String message) {
         super(message);
     }
 }

@@ -1,14 +1,15 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.cart.Cart;
+import com.es.phoneshop.cart.CartService;
+import com.es.phoneshop.cart.HttpSessionCartService;
+import com.es.phoneshop.cart.OutOfStockException;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.ProductNotFoundException;
 import com.es.phoneshop.recentlyViewed.RecentlyViewedService;
-import com.es.phoneshop.сart.Cart;
-import com.es.phoneshop.сart.CartService;
-import com.es.phoneshop.сart.HttpSessionCartService;
-import com.es.phoneshop.сart.OutOfStockException;
+import com.es.phoneshop.util.RequestUtility;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,12 +25,14 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private RecentlyViewedService recentlyViewedService;
     private ProductDao productDao;
     private CartService cartService;
+    private RequestUtility requestUtility;
 
     @Override
     public void init() {
+        requestUtility = RequestUtility.getInstance();
         recentlyViewedService = RecentlyViewedService.getInstance();
         productDao = ArrayListProductDao.getInstance();
-        cartService = HttpSessionCartService.getIntstance();
+        cartService = HttpSessionCartService.getInstance();
     }
 
     @Override
@@ -37,14 +40,13 @@ public class ProductDetailsPageServlet extends HttpServlet {
         try {
 
 
-            long productId = getProductId(request);
+            long productId = requestUtility.getProductId(request);
 
             LinkedList<Product> recentlyViewedList = recentlyViewedService.getRecentlyViewedProductList(request);
 
 
             request.setAttribute("recentlyViewed", recentlyViewedList);
             request.setAttribute("products", productDao.getProduct(productId));
-            request.setAttribute("cart", cartService.getCart(request));
             request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
             recentlyViewedService.addToRecentlyViewedProductList(recentlyViewedList, productId);
         } catch (ProductNotFoundException | NumberFormatException exception) {
@@ -54,11 +56,10 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long productId = getProductId(request);
+        Long productId = requestUtility.getProductId(request);
         int quantity;
         try {
             quantity = Integer.valueOf(request.getParameter("quantity"));
-            if (quantity < 0) throw new IllegalArgumentException();
         } catch (NumberFormatException exception) {
             request.setAttribute("error", "Not a number");
             doGet(request, response);
@@ -71,7 +72,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         Cart cart = cartService.getCart(request);
         try {
             cartService.add(cart, productId, quantity);
-        } catch (OutOfStockException ex) {
+        } catch (OutOfStockException | IllegalArgumentException ex) {
             request.setAttribute("error", ex.getMessage());
             doGet(request, response);
             return;
@@ -80,12 +81,5 @@ public class ProductDetailsPageServlet extends HttpServlet {
         response.sendRedirect(request.getRequestURI() + "?message=Added successfully&quantity=" + quantity);
 
 
-    }
-
-    public Long getProductId(HttpServletRequest request) {
-        String uri = request.getRequestURI();
-
-        int index = uri.indexOf(request.getServletPath());
-        return Long.parseLong(uri.substring(index + request.getServletPath().length() + 1));
     }
 }
