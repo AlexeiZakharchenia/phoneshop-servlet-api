@@ -32,5 +32,4 @@ public class ProductListPageServlet extends HttpServlet {
         request.setAttribute("recentlyViewed", recentlyViewedService.getRecentlyViewedProductList(request));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
-
 }
