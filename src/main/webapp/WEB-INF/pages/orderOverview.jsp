@@ -46,7 +46,15 @@
 
         </c:forEach>
         <tr>
-            <td colspan="3" style="text-align: right">Total</td>
+            <td colspan="3" style="text-align: right">Total price of products</td>
+            <td>$${order.totalPrice}</td>
+        </tr>
+        <tr>
+            <td colspan="3" style="text-align: right">Delivery cost</td>
+            <td>$${order.deliveryCost}</td>
+        </tr>
+        <tr>
+            <td colspan="3" style="text-align: right">Total price:</td>
             <td>$${order.orderTotal}</td>
         </tr>
     </table>
@@ -65,6 +73,16 @@
         Delivery mode:
         <br>
             ${order.deliveryMode}
+    </p>
+    <p>
+        Delivery date:
+        <br>
+            ${order.date}
+    </p>
+    <p>
+        Payment method:
+        <br>
+            ${order.paymentMethod}
     </p>
 
 

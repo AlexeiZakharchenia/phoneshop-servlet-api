@@ -9,7 +9,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DosServiceImpl implements DosService {
 
     private static volatile DosServiceImpl instance = null;
-    private static int THRESHOLD = 30;
+    private static int THRESHOLD = 100;
+    private static long LOCKTIME = 60 * 1000;
     private volatile Date lastResetDate = new Date();
 
     private Map<String, AtomicInteger> ipCallCount = new ConcurrentHashMap<>();
@@ -46,7 +47,7 @@ public class DosServiceImpl implements DosService {
 
     private void mayBeReset() {
         Date date = new Date();
-        if ((date.getTime()) - lastResetDate.getTime() > 60 * 1000) {
+        if ((date.getTime()) - lastResetDate.getTime() > LOCKTIME) {
             lastResetDate = new Date();
             ipCallCount.clear();
             System.out.println("Clearing ip call map");

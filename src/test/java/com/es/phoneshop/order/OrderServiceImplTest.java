@@ -44,10 +44,13 @@ public class OrderServiceImplTest {
     }
 
     @Test
+    public void getPaymentMethods() {
+        assertNotNull(service.getPaymentMethods());
+    }
+
+    @Test
     public void placeOrderTest() {
         service.placeOrder(new Order());
         assertEquals(1, ArrayListOrderDao.getInstance().getOrders().size());
     }
-
-
 }

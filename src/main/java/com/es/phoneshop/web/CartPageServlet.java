@@ -41,7 +41,7 @@ public class CartPageServlet extends HttpServlet {
         String[] productIds = request.getParameterValues("productId");
         String[] quantities = request.getParameterValues("quantity");
 
-        String[] errors = new String[productIds.length];
+        String[] errors = new String[productIds.length + 1];
         Cart cart = cartService.getCart(request);
         for (int i = 0; i < productIds.length; ++i) {
             long productId = Long.valueOf(productIds[i]);

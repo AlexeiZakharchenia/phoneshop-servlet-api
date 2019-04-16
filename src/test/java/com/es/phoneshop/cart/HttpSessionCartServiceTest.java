@@ -54,7 +54,8 @@ public class HttpSessionCartServiceTest {
         httpSessionCartService.deleteProduct(cart, 1L);
         assertEquals(0, cart.getCartItems().size());
         httpSessionCartService.add(cart, 1L, 1);
-        httpSessionCartService.clearCart(cart);
+        httpSessionCartService.clearCart(cart, request);
+        cart = httpSessionCartService.getCart(request);
         assertEquals(0, cart.getCartItems().size());
     }
 

@@ -62,7 +62,7 @@ public class CartItemDeleteServletTest {
     }
 
     @Test
-    public void testDoGet() throws ServletException, IOException {
+    public void testDoPost() throws ServletException, IOException {
         servlet.init(servletConfig);
 
         servlet.doPost(request, response);

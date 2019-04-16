@@ -3,29 +3,25 @@ package com.es.phoneshop.web;
 import com.es.phoneshop.cart.Cart;
 import com.es.phoneshop.cart.CartService;
 import com.es.phoneshop.cart.HttpSessionCartService;
-import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.ProductDao;
-import com.es.phoneshop.order.DeliveryMode;
-import com.es.phoneshop.order.Order;
-import com.es.phoneshop.order.OrderService;
-import com.es.phoneshop.order.OrderServiceImpl;
+import com.es.phoneshop.order.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class CheckoutPageServlet extends HttpServlet {
 
     private CartService cartService;
-    private ProductDao productDao;
     private OrderService orderService;
 
     @Override
     public void init() {
-        productDao = ArrayListProductDao.getInstance();
         cartService = HttpSessionCartService.getInstance();
         orderService = OrderServiceImpl.getInstance();
     }
@@ -33,13 +29,13 @@ public class CheckoutPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Cart cart = cartService.getCart(request);
-        String deliveryModeString = request.getParameter("deliveryMode");
-        DeliveryMode deliveryMode = null;
-        if (deliveryModeString != null) {
-            deliveryMode = DeliveryMode.valueOf(deliveryModeString);
+        if (cart.getCartItems().size() == 0) {
+            response.sendRedirect(request.getContextPath() + "/cart?errorMessage=You have no products in cart");
+            return;
         }
-        request.setAttribute("order", orderService.createOrder(cart, deliveryMode));
+        request.setAttribute("cart", cart);
         request.setAttribute("deliveryModes", orderService.getDeliveryModes());
+        request.setAttribute("paymentMethods", orderService.getPaymentMethods());
         request.getRequestDispatcher("/WEB-INF/pages/checkout.jsp").forward(request, response);
     }
 
@@ -47,12 +43,17 @@ public class CheckoutPageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Cart cart = cartService.getCart(request);
         String deliveryModeString = request.getParameter("deliveryMode");
+        boolean hasError = false;
         DeliveryMode deliveryMode = null;
         if (deliveryModeString != null) {
+            int index = deliveryModeString.indexOf('(');
+            deliveryModeString = deliveryModeString.substring(0, index);
             deliveryMode = DeliveryMode.valueOf(deliveryModeString);
+        } else {
+            hasError = true;
+            request.setAttribute("deliveryModeError", "Unknown delivery mode");
         }
-        Order order = orderService.createOrder(cart, deliveryMode);
-        boolean hasError = false;
+
         String name = request.getParameter("name");
         if (name == null || name.isEmpty()) {
             hasError = true;
@@ -63,24 +64,39 @@ public class CheckoutPageServlet extends HttpServlet {
             hasError = true;
             request.setAttribute("addressError", "Address is required");
         }
+        String dateString = request.getParameter("deliveryDate");
+        Date date = null;
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            date = simpleDateFormat.parse(dateString);
+        } catch (ParseException ex) {
+            hasError = true;
+            request.setAttribute("deliveryDateError", "Invalid date");
+        }
+        PaymentMethod paymentMethod = null;
+        String paymentMethodString = request.getParameter("paymentMethod");
+        if (paymentMethodString != null) {
+            paymentMethod = PaymentMethod.valueOf(paymentMethodString);
+        } else {
+            hasError = true;
+            request.setAttribute("paymentMethodError", "Unknown payment method");
+        }
         if (hasError) {
-            renderCheckoutPage(request, response, order);
+            doGet(request, response);
             return;
         }
+
+
+        Order order = orderService.createOrder(cart, deliveryMode);
         order.setName(name);
         order.setAddress(address);
         order.setDeliveryMode(deliveryMode);
-        order.setDeliveryCost((deliveryMode == DeliveryMode.COURIER) ? OrderServiceImpl.COURIER_COST : OrderServiceImpl.STOREPICKUP_COST);
+        order.setDeliveryCost((deliveryMode.getDeliveryCost()));
         order.setOrderTotal(order.getDeliveryCost().add(order.getTotalPrice()));
+        order.setPaymentMethod(paymentMethod);
+        order.setDate(date);
         orderService.placeOrder(order);
-        cartService.clearCart(cart);
-        response.sendRedirect(request.getContextPath() + "/orderOverview/" + order.getSecureId());
-    }
-
-    private void renderCheckoutPage(HttpServletRequest request, HttpServletResponse response, Order order)
-            throws ServletException, IOException {
-        request.setAttribute("order", order);
-        request.setAttribute("deliveryModes", orderService.getDeliveryModes());
-        request.getRequestDispatcher("/WEB-INF/pages/checkout.jsp").forward(request, response);
+        cartService.clearCart(cart, request);
+        response.sendRedirect(request.getRequestURI() + "/orderOverview/" + order.getSecureId());
     }
 }

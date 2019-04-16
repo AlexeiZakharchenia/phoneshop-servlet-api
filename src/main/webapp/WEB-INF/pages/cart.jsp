@@ -14,6 +14,9 @@
     <c:if test="${not empty param.message}">
         <br><span style="color: green">${param.message}</span>
     </c:if>
+    <c:if test="${not empty param.errorMessage}">
+        <br><span style="color: red">${param.errorMessage}</span>
+    </c:if>
     <form method="post" action="${pageContext.servletContext.contextPath}/cart">
         <table>
             <thead>
@@ -69,9 +72,11 @@
         <br>
         <button>Update</button>
     </form>
-    <form method="get" action="${pageContext.servletContext.contextPath}/checkout">
-        <button>Checkout</button>
-    </form>
+    <c:if test="${empty errors}">
+        <form method="get" action="${pageContext.servletContext.contextPath}/checkout">
+            <button>Checkout</button>
+        </form>
+    </c:if>
 
     <h4>Recently Viewed:</h4>
     <table>

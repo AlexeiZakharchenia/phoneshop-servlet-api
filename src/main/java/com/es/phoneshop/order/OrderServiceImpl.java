@@ -42,10 +42,10 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalQuantity(cart.getTotalQuantity());
         if (deliveryMode == DeliveryMode.COURIER) {
             order.setDeliveryMode(deliveryMode);
-            order.setDeliveryCost(COURIER_COST);
+            order.setDeliveryCost(deliveryMode.getDeliveryCost());
         } else {
             order.setDeliveryMode(deliveryMode);
-            order.setDeliveryCost(STOREPICKUP_COST);
+            order.setDeliveryCost(deliveryMode.getDeliveryCost());
         }
         order.setOrderTotal(order.getDeliveryCost().add(order.getTotalPrice()));
         return order;
@@ -59,5 +59,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void placeOrder(Order order) {
         orderDao.save(order);
+    }
+
+    @Override
+    public List<PaymentMethod> getPaymentMethods() {
+        return Arrays.asList(PaymentMethod.values());
     }
 }

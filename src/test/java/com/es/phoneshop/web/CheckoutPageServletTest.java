@@ -1,5 +1,9 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.cart.Cart;
+import com.es.phoneshop.cart.CartItem;
+import com.es.phoneshop.cart.HttpSessionCartService;
+import com.es.phoneshop.cart.OutOfStockException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,15 +37,23 @@ public class CheckoutPageServletTest {
     @Mock
     private HttpSession session;
 
+
     @InjectMocks
     private CheckoutPageServlet servlet;
 
 
     @Before
-    public void setup() {
+    public void setup() throws OutOfStockException {
         when(request.getSession()).thenReturn(session);
+        Cart cart = new Cart();
+        cart.getCartItems().add(new CartItem());
+        when(session.getAttribute(HttpSessionCartService.SESSION_CART_KEY)).thenReturn(cart);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
-        when(request.getParameter(anyString())).thenReturn("COURIER");
+        when(request.getParameter("name")).thenReturn("COURIER");
+        when(request.getParameter("deliveryDate")).thenReturn("2015-12-12");
+        when(request.getParameter("deliveryMode")).thenReturn("COURIER($2)");
+        when(request.getParameter("address")).thenReturn("address");
+        when(request.getParameter("paymentMethod")).thenReturn("MONEY");
     }
 
     @Test
