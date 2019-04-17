@@ -30,10 +30,7 @@ public class RequestUtility {
 
     public Long getProductId(HttpServletRequest request) {
         String uri = request.getRequestURI();
-
         int index = uri.indexOf(request.getServletPath());
         return Long.parseLong(uri.substring(index + request.getServletPath().length() + 1));
     }
-
-
 }

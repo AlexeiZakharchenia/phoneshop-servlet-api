@@ -78,6 +78,17 @@
     </servlet-mapping>
 
 
+    <servlet>
+        <servlet-name>productCreateComment</servlet-name>
+        <servlet-class>com.es.phoneshop.web.CreateProductCommentServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>productCreateComment</servlet-name>
+        <url-pattern>/products/createProductComment/*</url-pattern>
+    </servlet-mapping>
+
+
     <filter>
         <filter-name>dosFilter</filter-name>
         <filter-class>com.es.phoneshop.web.filters.DosFilter</filter-class>

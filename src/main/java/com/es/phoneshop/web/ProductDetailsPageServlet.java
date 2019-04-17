@@ -4,6 +4,8 @@ import com.es.phoneshop.cart.Cart;
 import com.es.phoneshop.cart.CartService;
 import com.es.phoneshop.cart.HttpSessionCartService;
 import com.es.phoneshop.cart.OutOfStockException;
+import com.es.phoneshop.comments.ArrayListProductReviewDao;
+import com.es.phoneshop.comments.ProductReviewDao;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
@@ -26,9 +28,11 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao;
     private CartService cartService;
     private RequestUtility requestUtility;
+    private ProductReviewDao productReviewDao;
 
     @Override
     public void init() {
+        productReviewDao = ArrayListProductReviewDao.getInstance();
         requestUtility = RequestUtility.getInstance();
         recentlyViewedService = RecentlyViewedService.getInstance();
         productDao = ArrayListProductDao.getInstance();
@@ -38,13 +42,12 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-
-
             long productId = requestUtility.getProductId(request);
 
             LinkedList<Product> recentlyViewedList = recentlyViewedService.getRecentlyViewedProductList(request);
 
 
+            request.setAttribute("productComments", productReviewDao.getComments(productId));
             request.setAttribute("recentlyViewed", recentlyViewedList);
             request.setAttribute("products", productDao.getProduct(productId));
             request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
